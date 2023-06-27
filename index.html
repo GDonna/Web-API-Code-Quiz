@@ -10,11 +10,12 @@
     <div class="card">
 
       <h1>Code Quiz!</h1>
-      <h2>Are you ready to be tested on your coding knowledge?</h2>
+      <h2 id="sub">Are you ready to be tested on your coding knowledge?</h2>
       <button id="showButton">Let's Start!</button>
       <div id="hiddenInfo" style="display: none;">
 
         <div id="question-container">
+          <h1 class="time" style="text-align:right;"></h1>
           <h2 id="question"></h2>
           <div id="options"></div>
         </div>
@@ -25,12 +26,11 @@
             <label for="name">Enter your name:</label>
             <input type="text" id="name-input">
             <button id="submit-button">Submit</button>
-          </div>
-        
-      </div>
+        </div>
 
-      <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    
+    </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> 
 	<script src="./assets/js/script.js"></script>
   </body>
 </html>
