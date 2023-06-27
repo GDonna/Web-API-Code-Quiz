@@ -29,7 +29,7 @@ const quizData = [
       {
         question: "How do you prevent default action of the DOM?",
         options: ["submitEl.addEventListener", "console.log(event)", "Yell at it", "event.preventDefault()"],
-        answer: 4
+        answer: 3
       },
       
   ];
@@ -135,33 +135,50 @@ const quizData = [
   }
   
   // Need an object to hold initials and score
-  const scoreHolder = {
-    name: nameInput,
-    score: scoreElement.value,
-  }
+  
   var playerName
   var scoreHolderArray =[]
   // You need an array to push objects to
   scoreHolderArray.push(scoreHolder)
   // Then JSON.strigify the array into your local storage
-
+  
   // A function that would grab data from the local storage // Needs to be parsed
-// Retrieve the JSON string from local storage
-var storedScoreHolder = localStorage.getItem('scoreHolderArray');
-// Convert the JSON string back to an array
-var retrievedArray = JSON.parse(storedScoreHolder);
-
-console.log(retrievedArray); 
+  // Retrieve the JSON string from local storage
+  var storedScoreHolder = localStorage.getItem('scoreHolderArray');
+  // Convert the JSON string back to an array
+  var retrievedArray = JSON.parse(storedScoreHolder);
+  
+  console.log(retrievedArray); 
   submitButton.addEventListener("click", () => {
     playerName = nameInput.value.trim();
-  
-    if (playerName !== "") {
-      saveHighScore("Score", JSON.stringify(scoreHolderArray))
+
+    const scoreHolder = {
+      name: nameInput.value,
+      score: scoreElement.value,
     }
+    var hasPlayed = scoreHolderArray.some(function(player){
+      return player.name===playerName
+    })
+
+    if (!hasPlayed){
+      scoreHolderArray.push(scoreHolder)
+      saveHighScore()
+      return;
+    }
+
+    for (var i=0; i<scoreHolderArray.length; i++){
+      if (scoreHolderArray[i].name=== playerName){
+        if (scoreHolderArray[i].score< score) {
+          scoreHolderArray[i].score = score
+        }
+      }
+    }
+    saveHighScore();
+      
   });
   
   function saveHighScore() {
-    localStorage.setItem("scoreHolderArray", JSON.stringify(scoreHolderArray));
+    localStorage.setItem("Score", JSON.stringify(scoreHolderArray));
   }
   
   
