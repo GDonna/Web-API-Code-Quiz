@@ -52,22 +52,7 @@ const quizData = [
   const questionElement = document.getElementById("question");
   const optionsElement = document.getElementById("options");
  
-  
-  
-//This is the function to set the timer
-// // Selects element by class
-// function setTime() {
-//   var timerInterval = setInterval(function() {
-//     secondsLeft--;
-//     timeEl.textContent = secondsLeft
 
-//     if(secondsLeft === 0) {
-//       clearInterval(timerInterval);
-//     }
-//   }, 1000);
-
-
-  // Load initial question
   loadQuestion();
   
   function loadQuestion() {
