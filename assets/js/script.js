@@ -1,13 +1,24 @@
 var startQuiz = document.querySelector("showbutton");
 
+
 const showButton = document.getElementById("showButton");
 const hiddenInfo = document.getElementById("hiddenInfo");
 const subText = document.getElementById("sub")
 
+var timeEl = document.querySelector(".time");
+
+var secondsLeft = 60;
+var timerInterval;
+function setTime(){
+  secondsLeft --
+  timeEl.textContent=secondsLeft
+}
+
 showButton.addEventListener("click", function() {
-    hiddenInfo.style.display = "block",
-    showButton.style.display = "none";
-    subText.style.display = "none";
+  hiddenInfo.style.display = "block",
+  showButton.style.display = "none";
+  subText.style.display = "none";
+  timerInterval=setInterval(setTime, 1000)
 });
 
 const quizData = [
@@ -45,24 +56,16 @@ const quizData = [
   
 //This is the function to set the timer
 // // Selects element by class
-// var timeEl = document.querySelector("time");
-
-// var secondsLeft = 60;
 // function setTime() {
-//   // Sets interval in variable
 //   var timerInterval = setInterval(function() {
 //     secondsLeft--;
-//     timeEl.textContent = secondsLeft + " seconds left till colorsplosion.";
+//     timeEl.textContent = secondsLeft
 
 //     if(secondsLeft === 0) {
-//       // Stops execution of action at set interval
 //       clearInterval(timerInterval);
-//       // Calls function to create and append image
-//       // sendMessage();
 //     }
-
 //   }, 1000);
-// }
+
 
   // Load initial question
   loadQuestion();
@@ -88,6 +91,8 @@ const quizData = [
   
     if (selectedOption === quizQuestion.answer) {
       score++;
+    } else {
+      secondsLeft -= 10;
     }
   
     currentQuestion++;
@@ -99,12 +104,13 @@ const quizData = [
     }
   }
   
-  const scoreContainer = document.getElementById("score-card");
+    const scoreContainer = document.getElementById("score-card");
     const scoreElement = document.getElementById("score");
     const nameInput = document.getElementById("name-input");
     const submitButton = document.getElementById("submit-button");
 
   function showResults() {
+    clearInterval(timerInterval)
     questionContainer.innerHTML = `
       <h2>Quiz completed!</h2>
       <p>
@@ -132,56 +138,49 @@ const quizData = [
     questionContainer.style.display = "none";
     scoreContainer.style.display = "block";
     scoreElement.textContent = score;
+    nameInput.textContent = "";
   }
   
-  // Need an object to hold initials and score
-  
-  var playerName
-  var scoreHolderArray =[]
-  // You need an array to push objects to
-  scoreHolderArray.push(scoreHolder)
-  // Then JSON.strigify the array into your local storage
-  
-  // A function that would grab data from the local storage // Needs to be parsed
-  // Retrieve the JSON string from local storage
+  var scoreHolderArray = JSON.parse(localStorage.getItem("Score"))||[]
+  console.log('scoreHolderArray', scoreHolderArray)
+
   var storedScoreHolder = localStorage.getItem('scoreHolderArray');
-  // Convert the JSON string back to an array
+  
   var retrievedArray = JSON.parse(storedScoreHolder);
   
   console.log(retrievedArray); 
-  submitButton.addEventListener("click", () => {
+
+  function saveData() {
+    console.log('scoreHolderArray', scoreHolderArray)
+
     playerName = nameInput.value.trim();
-
-    const scoreHolder = {
-      name: nameInput.value,
-      score: scoreElement.value,
-    }
-    var hasPlayed = scoreHolderArray.some(function(player){
-      return player.name===playerName
-    })
-
-    if (!hasPlayed){
-      scoreHolderArray.push(scoreHolder)
-      saveHighScore()
-      return;
-    }
-
-    for (var i=0; i<scoreHolderArray.length; i++){
-      if (scoreHolderArray[i].name=== playerName){
-        if (scoreHolderArray[i].score< score) {
-          scoreHolderArray[i].score = score
+    
+        var scoreHolder = {
+          name: playerName,
+          score: scoreElement.textContent,
         }
+    
+      scoreHolderArray.push(scoreHolder);
+
+      localStorage.setItem("Score", JSON.stringify(scoreHolderArray))
+
+      for (const obj of scoreHolderArray){
+        if (obj.name!==playerName){
+            const li=document.createElement("li")
+            li.textContent=obj.name + ": " +obj.score;
+            displayHighScore.append(li)
+            }
       }
-    }
-    saveHighScore();
+
+      var newPlayer = scoreHolderArray.find(function(obj){
+        return obj.name===playerName
+      })
       
-  });
-  
-  function saveHighScore() {
-    localStorage.setItem("Score", JSON.stringify(scoreHolderArray));
+      const li=document.createElement("li")
+      li.textContent=newPlayer.name + ": " +newPlayer.score;
+      displayHighScore.prepend(li);
   }
-  
-  
-  
-  
-  
+
+  var displayHighScore = document.getElementById("displayScore")
+
+  submitButton.onclick = saveData;
